@@ -1,13 +1,357 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
-  <title>Hello, World!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FitTrack Gym Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-  <h1>
-    Hello, World!
-  </h1>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <h2>🏋️ FitTrack</h2>
+
+        <button onclick="showSection('dashboard')">🏠 Dashboard</button>
+        <button onclick="showSection('profile')">👤 Profile</button>
+        <button onclick="showSection('workout')">💪 Add Workout</button>
+        <button onclick="showSection('history')">📅 History</button>
+        <button onclick="showSection('calendar')">🗓️ Calendar</button>
+        <button onclick="showSection('progress')">📊 Progress</button>
+        <button onclick="showSection('bmi')">🧮 BMI</button>
+
+        <button class="dark-button" onclick="toggleDarkMode()">
+            🌙 Dark Mode
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section active">
+
+            <h1>Dashboard</h1>
+
+            <p class="subtitle">
+                Welcome to your fitness dashboard 👋
+            </p>
+
+            <div class="stats">
+
+                <div class="card">
+                    <span>💪</span>
+                    <h3>Total Workouts</h3>
+                    <strong id="totalWorkouts">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>✅</span>
+                    <h3>Completed</h3>
+                    <strong id="completedWorkouts">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>🏋️</span>
+                    <h3>Exercises</h3>
+                    <strong id="totalExercises">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>📊</span>
+                    <h3>Completion</h3>
+                    <strong id="completionRate">0%</strong>
+                </div>
+
+            </div>
+
+            <div class="welcome-box">
+
+                <h2>Stay Consistent 💪</h2>
+
+                <p>
+                    Track your workouts, view your progress
+                    and stay organized.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- PROFILE -->
+        <section id="profile" class="section">
+
+            <h1>Member Profile</h1>
+
+            <div class="form-box">
+
+                <input
+                    type="text"
+                    id="memberName"
+                    placeholder="Your Name"
+                >
+
+                <input
+                    type="number"
+                    id="memberAge"
+                    placeholder="Age"
+                >
+
+                <select id="memberGoal">
+
+                    <option value="">
+                        Select Fitness Goal
+                    </option>
+
+                    <option value="General Fitness">
+                        General Fitness
+                    </option>
+
+                    <option value="Strength">
+                        Strength
+                    </option>
+
+                    <option value="Build Muscle">
+                        Build Muscle
+                    </option>
+
+                    <option value="Improve Fitness">
+                        Improve Fitness
+                    </option>
+
+                </select>
+
+                <button onclick="saveProfile()">
+                    Save Profile
+                </button>
+
+            </div>
+
+            <div id="profileDisplay"></div>
+
+        </section>
+
+
+
+        <!-- ADD WORKOUT -->
+        <section id="workout" class="section">
+
+            <h1>Add Workout</h1>
+
+            <div class="form-box">
+
+                <input
+                    type="text"
+                    id="exercise"
+                    placeholder="Exercise Name"
+                >
+
+                <input
+                    type="date"
+                    id="date"
+                >
+
+                <input
+                    type="number"
+                    id="sets"
+                    placeholder="Sets"
+                >
+
+                <input
+                    type="number"
+                    id="reps"
+                    placeholder="Reps"
+                >
+
+                <input
+                    type="number"
+                    id="weight"
+                    placeholder="Weight (kg)"
+                >
+
+                <button onclick="addWorkout()">
+                    ➕ Add Workout
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- HISTORY -->
+        <section id="history" class="section">
+
+            <h1>Workout History</h1>
+
+            <div class="search-area">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔎 Search exercise..."
+                    oninput="displayWorkouts()"
+                >
+
+                <select
+                    id="filterStatus"
+                    onchange="displayWorkouts()"
+                >
+
+                    <option value="all">
+                        All Workouts
+                    </option>
+
+                    <option value="completed">
+                        Completed
+                    </option>
+
+                    <option value="pending">
+                        Pending
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div id="workoutContainer"></div>
+
+        </section>
+
+
+
+        <!-- CALENDAR -->
+        <section id="calendar" class="section">
+
+            <h1>Weekly Workout Calendar</h1>
+
+            <div class="calendar-grid">
+
+                <div class="day">
+                    <h3>Monday</h3>
+                    <div id="monday"></div>
+                </div>
+
+                <div class="day">
+                    <h3>Tuesday</h3>
+                    <div id="tuesday"></div>
+                </div>
+
+                <div class="day">
+                    <h3>Wednesday</h3>
+                    <div id="wednesday"></div>
+                </div>
+
+                <div class="day">
+                    <h3>Thursday</h3>
+                    <div id="thursday"></div>
+                </div>
+
+                <div class="day">
+                    <h3>Friday</h3>
+                    <div id="friday"></div>
+                </div>
+
+                <div class="day">
+                    <h3>Saturday</h3>
+                    <div id="saturday"></div>
+                </div>
+
+                <div class="day">
+                    <h3>Sunday</h3>
+                    <div id="sunday"></div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- PROGRESS -->
+        <section id="progress" class="section">
+
+            <h1>Progress</h1>
+
+            <div class="progress-box">
+
+                <h2>Workout Completion</h2>
+
+                <div class="progress-bar">
+
+                    <div id="progressFill"></div>
+
+                </div>
+
+                <p id="progressText">
+                    0% completed
+                </p>
+
+            </div>
+
+
+            <div class="chart-box">
+
+                <h2>Workout Statistics</h2>
+
+                <canvas id="workoutChart"></canvas>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- BMI -->
+        <section id="bmi" class="section">
+
+            <h1>BMI Calculator</h1>
+
+            <div class="form-box">
+
+                <input
+                    type="number"
+                    id="height"
+                    placeholder="Height (cm)"
+                >
+
+                <input
+                    type="number"
+                    id="bmiWeight"
+                    placeholder="Weight (kg)"
+                >
+
+                <button onclick="calculateBMI()">
+                    Calculate BMI
+                </button>
+
+                <div id="bmiResult"></div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
 </body>
 </html>
